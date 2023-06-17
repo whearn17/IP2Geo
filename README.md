@@ -1,6 +1,6 @@
 # IP2Geo
 
-This is a Python script that uses the ip-api.com API to query a list of IP addresses and get the geolocation data for each IP. The information retrieved includes country, region, city, zip code, ISP, and more. The results are saved in a CSV file. API supports IPV4 and IPV6.
+This is a Python script that uses the ip-api.com API to query a list of IP addresses and get the geolocation data for each IP. The information retrieved includes country, region, city, district, zip code, ISP, and more. The results are saved in a CSV file. API supports IPV4 and IPV6.
 
 ## Prerequisites
 
