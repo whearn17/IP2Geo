@@ -1,10 +1,12 @@
-import requests
-import json
-import csv
+import ipaddress
 import argparse
+import csv
+import requests
 import concurrent.futures
 
-FIELDS = ['status', 'message', 'country', 'regionName', 'city', 'district', 'zip', 'isp', 'org', 'as', 'mobile', 'proxy', 'query']
+FIELDS = ['query', 'country', 'regionName', 'city', 'district', 'zip', 'isp', 'org', 'as',
+          'mobile', 'proxy', 'status', 'message']
+
 
 def query_ip(ip, api_key):
     try:
@@ -24,6 +26,14 @@ def write_to_csv(data, writer):
         writer.writerow(data)
 
 
+def is_valid_ip(ip):
+    try:
+        ipaddress.ip_address(ip)
+        return True
+    except ValueError:
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True, help="File containing IPs to query")
@@ -36,6 +46,12 @@ def main():
             ips = f.read().splitlines()
     except FileNotFoundError:
         print(f"Input file {args.input} not found.")
+        return
+
+    # Validate the IPs here and remove the invalid ones
+    ips = [ip for ip in ips if is_valid_ip(ip)]
+    if len(ips) == 0:
+        print("No valid IP addresses found.")
         return
 
     with concurrent.futures.ThreadPoolExecutor() as executor, open(args.csv, 'w', newline='', encoding='utf-8') as f:
