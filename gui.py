@@ -47,6 +47,7 @@ class MyApp(QMainWindow):
 
         self.ip_textbox = QTextEdit(self)
         self.ip_textbox.setLineWrapMode(QTextEdit.NoWrap)
+        self.ip_textbox.setAcceptRichText(False)
         lay.addWidget(self.ip_textbox)
 
         self.lookup_button = QPushButton('Lookup IPs', self)
@@ -63,7 +64,7 @@ class MyApp(QMainWindow):
         logging.basicConfig(level=logging.INFO)
 
     def lookup_ips(self):
-        ips_text = self.ip_textbox.toPlainText().lstrip()
+        ips_text = self.ip_textbox.toPlainText().strip()
         ips = ips_text.split('\n')
 
         # Creating a set of unique IPs to look up
@@ -105,6 +106,13 @@ class MyApp(QMainWindow):
             if ip in self.cache:
                 self.results[i] = self.cache[ip]
 
-        result_string = '\n'.join(self.results)
+        # Adding the column headers
+        headers = ["Country", "Region", "ISP", "IsProxy"]
+        result_string = "\t".join(headers) + '\n' + '\n'.join(self.results)
+
+        # Remove last newline if the last result is an empty string
+        if self.results[-1] == '':
+            result_string = result_string[:-1]
+
         pyperclip.copy(result_string)
         QMessageBox.information(self, 'Copied to clipboard', 'The results have been copied to your clipboard.')
