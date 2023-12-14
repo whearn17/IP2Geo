@@ -64,7 +64,7 @@ class MyApp(QMainWindow):
         logging.basicConfig(level=logging.INFO)
 
     def lookup_ips(self):
-        ips_text = self.ip_textbox.toPlainText().strip()
+        ips_text = self.ip_textbox.toPlainText()
         ips = ips_text.split('\n')
 
         # Creating a set of unique IPs to look up
