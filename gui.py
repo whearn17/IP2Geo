@@ -1,6 +1,6 @@
 import logging
 
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QTextEdit, QPushButton, QMessageBox, QWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QMessageBox, QWidget, QPlainTextEdit
 from PyQt5.QtGui import QIcon
 import pyperclip
 import concurrent.futures
@@ -45,9 +45,9 @@ class MyApp(QMainWindow):
         self.setCentralWidget(self.central_widget)
         lay = QVBoxLayout(self.central_widget)
 
-        self.ip_textbox = QTextEdit(self)
-        self.ip_textbox.setLineWrapMode(QTextEdit.NoWrap)
-        self.ip_textbox.setAcceptRichText(False)
+        self.ip_textbox = QPlainTextEdit(self)
+        self.ip_textbox.setLineWrapMode(QPlainTextEdit.NoWrap)
+        # self.ip_textbox.setAcceptRichText(False)
         lay.addWidget(self.ip_textbox)
 
         self.lookup_button = QPushButton('Lookup IPs', self)
