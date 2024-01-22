@@ -47,11 +47,11 @@ class MyApp(QMainWindow):
 
         self.ip_textbox = QPlainTextEdit(self)
         self.ip_textbox.setLineWrapMode(QPlainTextEdit.NoWrap)
-        # self.ip_textbox.setAcceptRichText(False)
         lay.addWidget(self.ip_textbox)
 
         self.lookup_button = QPushButton('Lookup IPs', self)
         self.lookup_button.clicked.connect(self.lookup_ips)
+        self.lookup_button.setFixedSize(100, 50)
         lay.addWidget(self.lookup_button)
 
         self.setFixedSize(500, 500)
