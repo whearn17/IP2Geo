@@ -1,6 +1,7 @@
 import logging
 
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QMessageBox, QWidget, QPlainTextEdit
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QMessageBox, QWidget, QPlainTextEdit, QProgressBar, \
+    QHBoxLayout
 from PyQt5.QtGui import QIcon
 import pyperclip
 import concurrent.futures
@@ -49,11 +50,19 @@ class MyApp(QMainWindow):
         self.ip_textbox.setLineWrapMode(QPlainTextEdit.NoWrap)
         lay.addWidget(self.ip_textbox)
 
+        hbox = QHBoxLayout()
+
         self.lookup_button = QPushButton('Lookup IPs', self)
         self.lookup_button.clicked.connect(self.lookup_ips)
-        self.lookup_button.setFixedSize(100, 50)
-        lay.addWidget(self.lookup_button)
+        self.lookup_button.setFixedSize(100, 32)
+        hbox.addWidget(self.lookup_button)
 
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setFixedSize(370, 30)
+        self.progress_bar.setTextVisible(False)
+        hbox.addWidget(self.progress_bar)
+
+        lay.addLayout(hbox)
         self.setFixedSize(500, 500)
 
         self.results = []
@@ -82,6 +91,7 @@ class MyApp(QMainWindow):
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = {}
+            completed_tasks = 0
 
             for i, ip in to_lookup_ips:
                 future = executor.submit(query_ip, ip, self.api_key)
@@ -89,6 +99,8 @@ class MyApp(QMainWindow):
 
             for future in concurrent.futures.as_completed(futures):
                 i, ip = futures[future]  # Extract the index and ip
+                completed_tasks += 1
+                self.progress_bar.setValue(int((completed_tasks / len(to_lookup_ips)) * 100))
                 try:
                     data = future.result()
                     if data and data.get('status') == 'success':
@@ -116,3 +128,5 @@ class MyApp(QMainWindow):
 
         pyperclip.copy(result_string)
         QMessageBox.information(self, 'Copied to clipboard', 'The results have been copied to your clipboard.')
+
+        self.progress_bar.setValue(0)
